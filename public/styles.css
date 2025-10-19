@@ -668,3 +668,62 @@ body {
     background: none;
   }
 }
+
+/* 行编辑样式 */
+.data-cell {
+  padding: 0 !important;
+}
+
+.cell-text {
+  display: block;
+  padding: var(--spacing-md);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.cell-input {
+  padding: var(--spacing-sm) !important;
+  border: 1px solid var(--primary) !important;
+  border-radius: 4px !important;
+}
+
+.btn-edit-row {
+  background-color: #17a2b8;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.btn-edit-row:hover {
+  background-color: #138496;
+}
+
+/* 页面编辑样式 */
+.page-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-edit-page {
+  background-color: #17a2b8;
+  color: white;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-edit-page:hover {
+  background-color: #138496;
+}
+
+.page-title-input,
+.page-columns-input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}

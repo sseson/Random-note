@@ -196,7 +196,6 @@ class RecordsApp {
     const thead = document.getElementById('tableHead');
     const tbody = document.getElementById('tableBody');
 
-    // 渲染表头
     thead.innerHTML = '';
     const headerRow = document.createElement('tr');
 
@@ -208,40 +207,105 @@ class RecordsApp {
 
     const actionTh = document.createElement('th');
     actionTh.textContent = '操作';
-    actionTh.style.width = '80px';
+    actionTh.style.width = '100px';
     actionTh.style.textAlign = 'center';
     headerRow.appendChild(actionTh);
 
     thead.appendChild(headerRow);
 
-    // 渲染表体
     tbody.innerHTML = '';
     const rows = this.data[this.currentPageId] || [];
 
     rows.forEach((row, rowIndex) => {
       const tr = document.createElement('tr');
+      tr.dataset.rowIndex = rowIndex;
+      tr.dataset.editing = 'false';
 
       for (let colIndex = 0; colIndex < page.columns; colIndex++) {
         const td = document.createElement('td');
+        td.className = 'data-cell';
+        
+        // 默认显示为文本（不是输入框）
+        const textSpan = document.createElement('span');
+        textSpan.className = 'cell-text';
+        textSpan.textContent = row[colIndex] || '';
+        textSpan.style.display = 'block';
+        
+        // 隐藏的输入框
         const input = document.createElement('input');
+        input.className = 'cell-input';
         input.type = 'text';
         input.value = row[colIndex] || '';
+        input.style.display = 'none';
+        input.style.width = '100%';
+        
+        td.appendChild(textSpan);
         td.appendChild(input);
         tr.appendChild(td);
       }
 
-      // 删除按钮
+      // 操作按钮
       const actionTd = document.createElement('td');
       actionTd.className = 'actions-cell';
+      
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn btn-edit-row';
+      editBtn.textContent = '✏️ 编辑';
+      editBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.toggleRowEdit(tr, rowIndex, page);
+      };
+      
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'btn btn-delete-row';
       deleteBtn.textContent = '🗑️';
-      deleteBtn.onclick = () => this.deleteRow(rowIndex);
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.deleteRow(rowIndex);
+      };
+      
+      actionTd.appendChild(editBtn);
       actionTd.appendChild(deleteBtn);
       tr.appendChild(actionTd);
 
       tbody.appendChild(tr);
     });
+  }
+
+  toggleRowEdit(tr, rowIndex, page) {
+    const isEditing = tr.dataset.editing === 'true';
+    const cells = tr.querySelectorAll('.data-cell');
+    const editBtn = tr.querySelector('.btn-edit-row');
+    
+    if (!isEditing) {
+      // 进入编辑模式
+      cells.forEach(cell => {
+        const textSpan = cell.querySelector('.cell-text');
+        const input = cell.querySelector('.cell-input');
+        textSpan.style.display = 'none';
+        input.style.display = 'block';
+        input.focus();
+      });
+      editBtn.textContent = '✅ 保存';
+      tr.dataset.editing = 'true';
+    } else {
+      // 退出编辑模式，保存修改
+      cells.forEach((cell, colIndex) => {
+        const textSpan = cell.querySelector('.cell-text');
+        const input = cell.querySelector('.cell-input');
+        
+        const newValue = input.value;
+        this.data[this.currentPageId][rowIndex][colIndex] = newValue;
+        textSpan.textContent = newValue;
+        
+        textSpan.style.display = 'block';
+        input.style.display = 'none';
+      });
+      editBtn.textContent = '✏️ 编辑';
+      tr.dataset.editing = 'false';
+      
+      this.showMessage('行数据已修改，请点击"保存"按钮保存到服务器', 'info');
+    }
   }
 
   addRow() {
