@@ -76,7 +76,7 @@ cp public/config.example.js public/config.js
 
 编辑 public/config.js，将地址填入 WORKER_URL
 
-```js
+```toml
 WORKER_URL: 'https://your.worker.url'    //填入Workers地址
 ```
 
