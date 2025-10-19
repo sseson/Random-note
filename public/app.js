@@ -314,6 +314,14 @@ class RecordsApp {
 
     this.data[this.currentPageId].push(newRow);
     this.renderTable(page);
+    
+    // ✅ 新添加的行自动进入编辑状态
+    const tbody = document.getElementById('tableBody');
+    const lastRow = tbody.lastElementChild;
+    if (lastRow) {
+      lastRow.dataset.editing = 'false';
+      this.toggleRowEdit(lastRow, this.data[this.currentPageId].length - 1, page);
+    }
   }
 
   deleteRow(rowIndex) {
