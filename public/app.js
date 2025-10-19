@@ -286,10 +286,9 @@ class RecordsApp {
         input.style.display = 'block';
         input.focus();
       });
-      editBtn.textContent = '✅ 保存';
       tr.dataset.editing = 'true';
     } else {
-      // 退出编辑模式，保存修改
+      // 退出编辑模式
       cells.forEach((cell, colIndex) => {
         const textSpan = cell.querySelector('.cell-text');
         const input = cell.querySelector('.cell-input');
@@ -301,10 +300,7 @@ class RecordsApp {
         textSpan.style.display = 'block';
         input.style.display = 'none';
       });
-      editBtn.textContent = '✏️ 编辑';
       tr.dataset.editing = 'false';
-      
-      this.showMessage('行数据已修改，请点击"保存"按钮保存到服务器', 'info');
     }
   }
 
