@@ -5,8 +5,6 @@ import { handleConfig, handleRecords } from './config.js';
 
 export default {
   async fetch(request, env, ctx) {
-    console.log('env.ALLOWED_ORIGIN:', env.ALLOWED_ORIGIN);
-
     const CORS_HEADERS = getCORSHeaders(env);
 
     if (request.method === 'OPTIONS') {

@@ -1,5 +1,5 @@
 {
-  "name": "records-app",
+  "name": "random-note",
   "version": "1.0.0",
   "description": "Random Note",
   "main": "src/worker.js",
@@ -9,7 +9,8 @@
   },
   "keywords": [
     "records",
-    "management"
+    "management",
+    "note"
   ],
   "author": "",
   "license": "MIT",
