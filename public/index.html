@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📊 记录管理系统</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 登录页面 -->
+  <div id="loginPage" class="page login-page active">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <h1>📊 记录管理</h1>
+          <p>安全登录</p>
+        </div>
+        
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="username">用户名</label>
+            <input 
+              type="text" 
+              id="username" 
+              placeholder="输入用户名"
+              autocomplete="username"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="password">密码</label>
+            <input 
+              type="password" 
+              id="password" 
+              placeholder="输入密码"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">
+            <span>🔓 登录</span>
+          </button>
+        </form>
+
+        <div id="loginError" class="message error" style="display: none;"></div>
+        
+        <div class="login-footer">
+          <p>演示账号: admin / 123456</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主应用页面 -->
+  <div id="appPage" class="page app-page">
+    <!-- 顶部导航 -->
+    <header class="app-header">
+      <div class="header-left">
+        <h1 class="app-title">📊 记录管理</h1>
+      </div>
+
+      <div class="header-center">
+        <div id="pageTabs" class="page-tabs"></div>
+      </div>
+
+      <div class="header-right">
+        <button id="themeToggle" class="btn btn-icon" title="切换主题">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button id="configBtn" class="btn btn-icon" title="页面配置">
+          ⚙️
+        </button>
+        <button id="logoutBtn" class="btn btn-danger" title="退出登录">
+          🚪 退出
+        </button>
+      </div>
+    </header>
+
+    <!-- 消息提示 -->
+    <div id="messageContainer" class="message-container"></div>
+
+    <!-- 主内容 -->
+    <main class="app-main">
+      <div class="page-header">
+        <h2 id="pageTitle" class="page-title">加载中...</h2>
+      </div>
+
+      <!-- 表格容器 -->
+      <div class="table-container">
+        <div class="table-wrapper">
+          <table id="dataTable" class="data-table">
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 操作栏 -->
+      <div class="action-bar">
+        <button id="addRowBtn" class="btn btn-success">
+          ➕ 添加行
+        </button>
+        <button id="saveDataBtn" class="btn btn-primary">
+          💾 保存
+        </button>
+        <button id="deleteAllBtn" class="btn btn-danger">
+          🗑️ 清空所有
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 页面配置模态框 -->
+  <div id="configModal" class="modal" style="display: none;">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚙️ 页面配置</h2>
+        <button class="modal-close" id="closeConfigModal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="pagesList" class="pages-list"></div>
+        
+        <div class="add-page-form">
+          <h3>添加新页面</h3>
+          <form id="addPageForm">
+            <div class="form-group">
+              <label for="newPageTitle">页面标题</label>
+              <input 
+                type="text" 
+                id="newPageTitle" 
+                placeholder="输入页面标题"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="newPageColumns">列数</label>
+              <input 
+                type="number" 
+                id="newPageColumns" 
+                min="1" 
+                max="20"
+                value="3"
+                required
+              >
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+              ➕ 添加页面
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

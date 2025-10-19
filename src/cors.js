@@ -1,0 +1,10 @@
+export function getCORSHeaders(env) {
+  console.log('ALLOWED_ORIGIN from env:', env.ALLOWED_ORIGIN);
+  
+  return {
+    'Access-Control-Allow-Origin': env.ALLOWED_ORIGIN,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
+  };
+}
