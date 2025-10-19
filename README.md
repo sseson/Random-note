@@ -18,11 +18,12 @@
 
 ## 快速开始
 
-### 1. 克隆仓库
+### 1. 克隆仓库，安装依赖
 
 ```bash
 git clone https://github.com/sseson/random-note.git
 cd random-note
+npm install
 ```
 
 ### 2. 配置 Cloudflare Workers
@@ -33,7 +34,7 @@ cd random-note
 cp wrangler.example.toml wrangler.toml
 ```
 
-使用以下命令创建KV，记住KV ID
+使用以下命令创建KV，记住KV id
 ```bash
 wrangler kv namespace create "RECORDS_STORE"
 ```
@@ -55,13 +56,7 @@ ALLOWED_ORIGIN = "https://your.worker.url"
 JWT_SECRET = "your-secret"     //填入密钥
 ```
 
-### 3. 安装依赖
-
-```bash
-npm install
-```
-
-### 4. 部署后端到 Cloudflare Workers
+### 3. 部署后端到 Cloudflare Workers
 
 执行下面命令部署后端
 ```bash
@@ -80,7 +75,7 @@ cp public/config.example.js public/config.js
 WORKER_URL: 'https://your.worker.url'    //填入Workers地址
 ```
 
-### 5. 部署前端到 Cloudflare Pages
+### 4. 部署前端到 Cloudflare Pages
 
 执行以下命令打包前端文件
 ```bash
@@ -97,7 +92,7 @@ cd ..
 - 输入项目名称，点击 Create project
 - 选择 pages.zip 文件上传，点击 Deploy
 
-配置前端CORS地址，编辑 wrangler.toml，将前端地址填入ALLOWED_ORIGIN
+获取到前端地址后，编辑 wrangler.toml，将前端地址填入ALLOWED_ORIGIN
 
 ```toml
 [vars]

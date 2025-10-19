@@ -290,6 +290,7 @@ class RecordsApp {
 
     if (result?.success) {
       this.showMessage('数据已保存！', 'success');
+      await this.loadPageData();
     }
   }
 
