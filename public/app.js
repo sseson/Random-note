@@ -390,15 +390,70 @@ class RecordsApp {
     this.config.pages.forEach((page, index) => {
       const item = document.createElement('div');
       item.className = 'page-item';
-      item.innerHTML = `
-        <div class="page-info">
-          <h4>${page.title}</h4>
-          <p>${page.columns} 列</p>
-        </div>
-        <button class="btn btn-danger btn-small" onclick="app.deletePage(${index})">
-          删除
-        </button>
-      `;
+      item.dataset.pageIndex = index;
+      item.dataset.editing = 'false';
+      
+      const pageInfo = document.createElement('div');
+      pageInfo.className = 'page-info';
+      
+      // 显示模式
+      const titleDisplay = document.createElement('h4');
+      titleDisplay.className = 'page-title-display';
+      titleDisplay.textContent = page.title;
+      titleDisplay.style.display = 'block';
+      
+      const columnsDisplay = document.createElement('p');
+      columnsDisplay.className = 'page-columns-display';
+      columnsDisplay.textContent = `${page.columns} 列`;
+      columnsDisplay.style.display = 'block';
+      
+      // 编辑模式
+      const titleInput = document.createElement('input');
+      titleInput.className = 'page-title-input';
+      titleInput.type = 'text';
+      titleInput.value = page.title;
+      titleInput.style.display = 'none';
+      titleInput.placeholder = '页面标题';
+      
+      const columnsInput = document.createElement('input');
+      columnsInput.className = 'page-columns-input';
+      columnsInput.type = 'number';
+      columnsInput.value = page.columns;
+      columnsInput.min = '1';
+      columnsInput.max = '20';
+      columnsInput.style.display = 'none';
+      columnsInput.placeholder = '列数';
+      
+      pageInfo.appendChild(titleDisplay);
+      pageInfo.appendChild(columnsDisplay);
+      pageInfo.appendChild(titleInput);
+      pageInfo.appendChild(columnsInput);
+      
+      // 按钮容器
+      const btnContainer = document.createElement('div');
+      btnContainer.className = 'page-buttons';
+      
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn btn-edit-page';
+      editBtn.textContent = '✏️ 编辑';
+      editBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.togglePageEdit(item, index);
+      };
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn btn-danger btn-small';
+      deleteBtn.textContent = '🗑️ 删除';
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.deletePage(index);
+      };
+      
+      btnContainer.appendChild(editBtn);
+      btnContainer.appendChild(deleteBtn);
+      
+      item.appendChild(pageInfo);
+      item.appendChild(btnContainer);
       container.appendChild(item);
     });
   }
@@ -414,8 +469,100 @@ class RecordsApp {
 
     if (result?.success) {
       this.showMessage('页面已添加！', 'success');
-      this.loadConfig();
       this.renderPagesList();
+      this.renderPageTabs();  // 更新首页的页面选项卡
+    }
+  }
+
+  togglePageEdit(item, index) {
+    const isEditing = item.dataset.editing === 'true';
+    const editBtn = item.querySelector('.btn-edit-page');
+    const titleDisplay = item.querySelector('.page-title-display');
+    const columnsDisplay = item.querySelector('.page-columns-display');
+    const titleInput = item.querySelector('.page-title-input');
+    const columnsInput = item.querySelector('.page-columns-input');
+    
+    if (!isEditing) {
+      // 进入编辑模式
+      titleDisplay.style.display = 'none';
+      columnsDisplay.style.display = 'none';
+      titleInput.style.display = 'block';
+      columnsInput.style.display = 'block';
+      editBtn.textContent = '✅ 保存';
+      item.dataset.editing = 'true';
+      titleInput.focus();
+    } else {
+      // 退出编辑模式，直接保存到服务器
+      const newTitle = titleInput.value.trim();
+      const newColumns = parseInt(columnsInput.value);
+      const oldColumns = this.config.pages[index].columns;
+      
+      if (!newTitle) {
+        this.showMessage('页面标题不能为空', 'error');
+        return;
+      }
+      
+      if (newColumns < 1 || newColumns > 20) {
+        this.showMessage('列数必须在 1-20 之间', 'error');
+        return;
+      }
+      
+      // 如果列数减少，提示用户确认
+      if (newColumns < oldColumns) {
+        const isConfirmed = confirm(
+          `列数从 ${oldColumns} 减少为 ${newColumns}，\n` +
+          `这可能导致第 ${newColumns + 1} 列及之后的数据被删除。\n\n` +
+          `确定要继续吗？`
+        );
+        
+        if (!isConfirmed) {
+          return;  // 用户取消，不保存
+        }
+      }
+        
+        if (!isConfirmed) {
+          return;  // 用户取消，不保存
+        }
+      }
+      
+      // 更新本地配置
+      this.config.pages[index].title = newTitle;
+      this.config.pages[index].columns = newColumns;
+      
+      // 直接调用 API 保存到服务器
+      this.savePageConfig(index);
+      
+      // 更新显示
+      titleDisplay.textContent = newTitle;
+      columnsDisplay.textContent = `${newColumns} 列`;
+      titleDisplay.style.display = 'block';
+      columnsDisplay.style.display = 'none';
+      titleInput.style.display = 'none';
+      columnsInput.style.display = 'none';
+      editBtn.textContent = '✏️ 编辑';
+      item.dataset.editing = 'false';
+    }
+  }
+
+
+  // 新增方法：保存单个页面的配置
+  async savePageConfig(index) {
+    const result = await this.fetchAPI('/config', {
+      method: 'POST',
+      body: JSON.stringify(this.config)
+    });
+
+    if (result?.success) {
+      this.showMessage('页面配置已保存！', 'success');
+      this.renderPageTabs();  // 更新首页的页面选项卡
+      
+      // 如果修改的是当前页面，刷新表格显示最新的列数
+      if (this.currentPageId === this.config.pages[index].id) {
+        const page = this.config.pages[index];
+        this.renderTable(page);  // 重新渲染表格
+      }
+    } else {
+      this.showMessage('保存页面配置失败', 'error');
     }
   }
 
@@ -423,6 +570,7 @@ class RecordsApp {
     if (confirm('确定要删除这个页面吗？')) {
       this.config.pages.splice(index, 1);
 
+      // 直接保存到服务器
       const result = await this.fetchAPI('/config', {
         method: 'POST',
         body: JSON.stringify(this.config)
@@ -430,7 +578,8 @@ class RecordsApp {
 
       if (result?.success) {
         this.showMessage('页面已删除！', 'success');
-        this.loadConfig();
+        this.renderPagesList();
+        this.loadConfig();  // 重新加载应用，切换到第一个页面
       }
     }
   }

@@ -704,17 +704,7 @@ body {
 .page-buttons {
   display: flex;
   gap: var(--spacing-sm);
-}
-
-.btn-edit-page {
-  background-color: #17a2b8;
-  color: white;
-  padding: 6px 12px;
-  font-size: 12px;
-}
-
-.btn-edit-page:hover {
-  background-color: #138496;
+  flex-wrap: wrap;
 }
 
 .page-title-input,
@@ -726,4 +716,16 @@ body {
   border-radius: 4px;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  font-size: 14px;
+}
+
+.btn-edit-page {
+  background-color: #17a2b8;
+  color: white;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-edit-page:hover {
+  background-color: #138496;
 }
