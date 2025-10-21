@@ -519,11 +519,6 @@ class RecordsApp {
           return;  // 用户取消，不保存
         }
       }
-        
-        if (!isConfirmed) {
-          return;  // 用户取消，不保存
-        }
-      }
       
       // 更新本地配置
       this.config.pages[index].title = newTitle;
